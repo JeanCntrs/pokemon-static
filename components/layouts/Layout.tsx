@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { NavBar } from '../ui';
 
 interface LayoutProps {
     title?: string;
@@ -15,7 +16,11 @@ export const Layout: React.FC<LayoutProps> = ({ title, children }) => {
                 <meta name="keywords" content="pokemon, pokedex" />
             </Head>
 
-            <main>
+            <NavBar />
+
+            <main style={{
+                padding: '0px 20px'
+            }}>
                 {children}
             </main>
         </>
