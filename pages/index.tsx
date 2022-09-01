@@ -1,7 +1,9 @@
 import { NextPage, GetStaticProps } from 'next';
-import { Button } from '@nextui-org/react';
-import { Layout } from '../components/layouts';
+
+import { Grid, Card, Row, Text } from '@nextui-org/react';
+
 import { pokeApi } from '../api';
+import { Layout } from '../components/layouts';
 import { Pokemon, PokemonListResponse } from '../interfaces';
 
 interface HomeProps {
@@ -11,15 +13,29 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = ({ pokemons }) => {
     return (
         <Layout title='Pokemon List'>
-            <ul>
+            <Grid.Container gap={2} justify='flex-start'>
                 {
-                    pokemons.map(({ id, name }) => (
-                        <li key={id}>
-                            #{id}- {name}
-                        </li>
+                    pokemons.map(({ id, name, img }) => (
+                        <Grid xs={6} sm={3} md={2} xl={1} key={id}>
+                            <Card isHoverable isPressable>
+                                <Card.Body css={{ p: 1 }}>
+                                    <Card.Image
+                                        src={img}
+                                        width="100%"
+                                        height={140}
+                                    />
+                                </Card.Body>
+                                <Card.Footer>
+                                    <Row justify='space-between'>
+                                        <Text transform='capitalize'>{name}</Text>
+                                        <Text>#{id}</Text>
+                                    </Row>
+                                </Card.Footer>
+                            </Card>
+                        </Grid>
                     ))
                 }
-            </ul>
+            </Grid.Container>
         </Layout>
     )
 }
@@ -30,7 +46,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     const pokemons: Pokemon[] = data.results.map((pokemon, index) => ({
         ...pokemon,
         id: index + 1,
-        img: `https://raw.githubsercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index + 1}.svg`
+        img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index + 1}.svg`
     }))
 
     return {
