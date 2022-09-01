@@ -2,25 +2,42 @@ import { NextPage, GetStaticProps } from 'next';
 import { Button } from '@nextui-org/react';
 import { Layout } from '../components/layouts';
 import { pokeApi } from '../api';
+import { Pokemon, PokemonListResponse } from '../interfaces';
 
-const Home: NextPage = (props) => {
-  console.log('props1', props);
+interface HomeProps {
+    pokemons: Pokemon[];
+}
 
-  return (
-    <Layout title='Pokemon List'>
-      <Button color='gradient'> Hello Again!</Button>
-    </Layout>
-  )
+const Home: NextPage<HomeProps> = ({ pokemons }) => {
+    return (
+        <Layout title='Pokemon List'>
+            <ul>
+                {
+                    pokemons.map(({ id, name }) => (
+                        <li key={id}>
+                            #{id}- {name}
+                        </li>
+                    ))
+                }
+            </ul>
+        </Layout>
+    )
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const { data } = await pokeApi.get('/pokemon?limit=151');
+    const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151');
 
-  return {
-    props: {
-      pokemons: data.results
+    const pokemons: Pokemon[] = data.results.map((pokemon, index) => ({
+        ...pokemon,
+        id: index + 1,
+        img: `https://raw.githubsercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index + 1}.svg`
+    }))
+
+    return {
+        props: {
+            pokemons
+        }
     }
-  }
 }
 
 export default Home
