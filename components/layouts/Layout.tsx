@@ -18,9 +18,7 @@ export const Layout: React.FC<LayoutProps> = ({ title, children }) => {
 
             <NavBar />
 
-            <main style={{
-                padding: '0px 20px'
-            }}>
+            <main style={{ padding: '8px 20px', height: 'calc(100vh - 70px)', overflowY: 'auto' }}>
                 {children}
             </main>
         </>
