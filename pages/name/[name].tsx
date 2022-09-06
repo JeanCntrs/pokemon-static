@@ -7,14 +7,14 @@ import confetti from 'canvas-confetti';
 
 import { pokeApi } from '../../api';
 import { Layout } from "../../components/layouts";
-import { PokemonFull } from '../../interfaces';
+import { PokemonFull, PokemonListResponse } from '../../interfaces';
 import { localFavorites } from "../../utils";
 
-interface PokemonPageProps {
+interface PokemonByNamePageProps {
     pokemon: PokemonFull
 }
 
-const PokemonPage: NextPage<PokemonPageProps> = ({ pokemon }) => {
+const PokemonByNamePage: NextPage<PokemonByNamePageProps> = ({ pokemon }) => {
     const [isInFavorites, setIsInFavorites] = useState(false);
 
     const onToggleFavorites = () => {
@@ -38,7 +38,7 @@ const PokemonPage: NextPage<PokemonPageProps> = ({ pokemon }) => {
     useEffect(() => {
         setIsInFavorites(localFavorites.existInFavorites(pokemon.id))
     }, [])
-
+    
     return (
         <Layout title={pokemon.name}>
             <Grid.Container css={{ marginTop: '5px' }} gap={2}>
@@ -104,23 +104,24 @@ const PokemonPage: NextPage<PokemonPageProps> = ({ pokemon }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
-    const pokemons151 = [...Array(151)].map((value, index) => `${index + 1}`)
+    const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151');
+    const pokemonsNames: string[] = data.results.map(result => result.name);
 
     return {
-        paths: pokemons151.map(id => ({ params: { id } })),
+        paths: pokemonsNames.map(name => ({ params: { name } })),
         fallback: false
     }
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-    const { id } = ctx.params as { id: string };
-    const { data } = await pokeApi.get<PokemonFull>(`/pokemon/${id}`);
+    const { name } = ctx.params as { name: string };
+    const { data } = await pokeApi.get<PokemonFull>(`/pokemon/${name}`);
 
     return {
         props: {
-            pokemon: { id: parseInt(id), name: data.name, sprites: data.sprites }
+            pokemon: { name, sprites: data.sprites }
         }
     }
 }
 
-export default PokemonPage;
+export default PokemonByNamePage;
