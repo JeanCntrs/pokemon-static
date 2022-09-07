@@ -4,11 +4,10 @@ import { Button, Card, Grid, Image, Text, Container } from "@nextui-org/react";
 
 import confetti from 'canvas-confetti';
 
-
 import { pokeApi } from '../../api';
 import { Layout } from "../../components/layouts";
 import { PokemonFull, PokemonListResponse } from '../../interfaces';
-import { localFavorites } from "../../utils";
+import { getPokemonInfo, localFavorites } from "../../utils";
 
 interface PokemonByNamePageProps {
     pokemon: PokemonFull
@@ -115,11 +114,10 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
     const { name } = ctx.params as { name: string };
-    const { data } = await pokeApi.get<PokemonFull>(`/pokemon/${name}`);
 
     return {
         props: {
-            pokemon: { name, sprites: data.sprites }
+            pokemon: await getPokemonInfo(name)
         }
     }
 }

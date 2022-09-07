@@ -12,7 +12,7 @@ export const PokeCard: React.FC<PokeCardProps> = ({ pokemon }) => {
     const { id, name, img } = pokemon;
 
     const onClick = () => {
-        router.push(`/pokemons/${id}`);
+        router.push(`/name/${name}`);
     }
 
     return (
