@@ -6,6 +6,8 @@ interface LayoutProps {
     children?: React.ReactNode;
 }
 
+const origin = (typeof window === 'undefined') ? '' : window.location.origin;
+
 export const Layout: React.FC<LayoutProps> = ({ title, children }) => {
     return (
         <>
@@ -14,6 +16,10 @@ export const Layout: React.FC<LayoutProps> = ({ title, children }) => {
                 <meta name='author' content='Jean C. Contreras' />
                 <meta name="description" content="Pokemon Info" />
                 <meta name="keywords" content="pokemon, pokedex" />
+
+                <meta property='og:title' content={`Info about ${title}`} />
+                <meta property='og:description' content={`Page about ${title}`} />
+                <meta property='og:image' content={`${origin}/img/banner.png`} />
             </Head>
 
             <NavBar />
